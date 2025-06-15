@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Google</title>
+    <style>
+        :root {
+            --background-color: #ffffff;
+            --text-color: #202124;
+            --search-border: #dfe1e5;
+            --search-box-shadow: rgba(32,33,36,0.28);
+            --button-bg: #f8f9fa;
+            --button-color: #3c4043;
+            --button-border: #f8f9fa;
+            --button-hover-border: #dadce0;
+            --result-bg: #f8f9fa;
+            --result-border: #dadce0;
+            --link-color: #1a0dab;
+            --download-btn-bg: #4285f4;
+            --download-btn-hover: #357ae8;
+            --no-results-color: #5f6368;
+            --keyword-chip-bg: #ebf1fb;
+            --keyword-chip-color: #1a73e8;
+            --keyword-chip-border: #dadce0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #202124;
+                --text-color: #e8eaed;
+                --search-border: #5f6368;
+                --search-box-shadow: rgba(200, 200, 200, 0.15);
+                --button-bg: #303134;
+                --button-color: #e8eaed;
+                --button-border: #303134;
+                --button-hover-border: #5f6368;
+                --result-bg: #303134;
+                --result-border: #5f6368;
+                --link-color: #8ab4f8;
+                --download-btn-bg: #8ab4f8;
+                --download-btn-hover: #aecbfa;
+                --no-results-color: #9aa0a6;
+                --keyword-chip-bg: #303134;
+                --keyword-chip-color: #8ab4f8;
+                --keyword-chip-border: #5f6368;
+            }
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .logo-container {
+            margin-top: 150px;
+            margin-bottom: 25px;
+            padding: 0;
+            text-align: center;
+        }
+        .logo {
+            font-size: 90px;
+            font-weight: 500;
+            line-height: 1;
+        }
+        .logo span:nth-child(1) { color: #4285f4; }
+        .logo span:nth-child(2) { color: #ea4335; }
+        .logo span:nth-child(3) { color: #fbbc05; }
+        .logo span:nth-child(4) { color: #4285f4; }
+        .logo span:nth-child(5) { color: #34a853; }
+        .logo span:nth-child(6) { color: #ea4335; }
+        .search-container {
+            width: 90%;
+            max-width: 600px;
+            position: relative;
+            margin: 0 auto;
+        }
+        .search-box {
+            width: 100%;
+            height: 46px;
+            border-radius: 24px;
+            border: 1px solid var(--search-border);
+            padding: 0 45px;
+            font-size: 16px;
+            outline: none;
+            box-shadow: 0 1px 6px var(--search-box-shadow);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            -webkit-appearance: none;
+            max-width: 584px;
+            margin: 0 auto;
+        }
+        .search-box:hover, .search-box:focus {
+            box-shadow: 0 1px 10px var(--search-box-shadow);
+        }
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--no-results-color);
+        }
+        .search-buttons {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            width: 90%;
+            max-width: 584px;
+        }
+        .search-btn {
+            background-color: var(--button-bg);
+            border: 1px solid var(--button-border);
+            border-radius: 4px;
+            color: var(--button-color);
+            font-size: 14px;
+            padding: 0 16px;
+            height: 36px;
+            cursor: pointer;
+            -webkit-appearance: none;
+            min-width: 120px;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+        .search-btn:hover, .search-btn:active {
+            box-shadow: 0 1px 1px rgba(0,0,0,.1);
+            border: 1px solid var(--button-hover-border);
+        }
+        .results-container {
+            width: 90%;
+            max-width: 600px;
+            margin-top: 20px;
+            display: none;
+        }
+        .result-item {
+            margin-bottom: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: var(--result-bg);
+            border: 1px solid var(--result-border);
+            word-break: break-word;
+        }
+        .result-name {
+            font-size: 16px;
+            color: var(--link-color);
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .result-type {
+            color: var(--text-color);
+            font-size: 14px;
+        }
+        .download-btn {
+            background-color: var(--download-btn-bg);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+            -webkit-appearance: none;
+        }
+        .download-btn:hover, .download-btn:active {
+            background-color: var(--download-btn-hover);
+        }
+        .no-results {
+            text-align: center;
+            color: var(--no-results-color);
+            margin-top: 20px;
+            padding: 0 15px;
+        }
+        .search-mode {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 13px;
+            color: var(--no-results-color);
+            display: none;
+        }
+
+        /* Media Queries for Better Mobile Support */
+        @media screen and (max-width: 480px) {
+            .logo {
+                font-size: 70px;
+            }
+            
+            .logo-container {
+                margin-top: 100px;
+            }
+            
+            .search-box {
+                height: 44px;
+            }
+        }
+        
+        @media screen and (max-width: 320px) {
+            .logo {
+                font-size: 60px;
+            }
+            
+            .logo-container {
+                margin-top: 80px;
+            }
+        }
+
+        /* Fix for iOS input zoom issue */
+        @media screen and (max-width: 768px) {
+            .search-box {
+                font-size: 16px;
+            }
+        }
+
+        /* Ensure touch targets are at least 48px */
+        @media (hover: none) and (pointer: coarse) {
+            .search-btn, .download-btn {
+                min-height: 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <div class="logo">
+            <span>G</span><span>o</span><span>o</span><span>g</span><span>l</span><span>e</span>
+        </div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
+        <input type="text" class="search-box" id="searchInput" placeholder="Search or type to find it...">
+    </div>
+
+    <div class="search-mode" id="searchMode"></div>
+
+    <div class="search-buttons">
+        <button class="search-btn" id="searchBtn">Search</button>
+        <button class="search-btn" id="feelingLuckyBtn">I'm Feeling Lucky</button>
+    </div>
+
+    <div class="results-container" id="resultsContainer">
+        <!-- Search results will be displayed here -->
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const feelingLuckyBtn = document.getElementById('feelingLuckyBtn');
+            const resultsContainer = document.getElementById('resultsContainer');
+            const searchMode = document.getElementById('searchMode');
+            
+            const KEYWORD = 'ignite';
+            
+            // Check for system theme preference changes
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+                // This will trigger when the user changes their system theme
+                console.log(`Theme changed to ${e.matches ? "dark" : "light"} mode`);
+            });
+
+            // Handle regular search
+            searchBtn.addEventListener('click', function() {
+                performSearch(searchInput.value);
+            });
+
+            // Handle "I'm Feeling Lucky" - automatically download the first match or go to first Google result
+            feelingLuckyBtn.addEventListener('click', function() {
+                performSearch(searchInput.value, true);
+            });
+
+            // Handle Enter key in search box
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch(searchInput.value);
+                }
+            });
+
+            // Update search mode indicator when typing
+            searchInput.addEventListener('input', updateSearchModeIndicator);
+
+            // Function to update search mode indicator
+            function updateSearchModeIndicator() {
+                const query = searchInput.value.trim();
+                
+                if (query.toLowerCase().startsWith(KEYWORD.toLowerCase())) {
+                    searchMode.textContent = "Code Search Mode";
+                    searchMode.style.color = "var(--keyword-chip-color)";
+                } else {
+                    searchMode.textContent = "";
+                }
+                
+                searchMode.style.display = searchMode.textContent ? "block" : "none";
+            }
+
+            // Function to determine and perform search
+            function performSearch(query, feelingLucky = false) {
+                if (!query.trim()) return;
+                
+                // Check if the query starts with the keyword
+                if (query.toLowerCase().startsWith(KEYWORD.toLowerCase())) {
+                    // Extract the actual search term after the keyword
+                    const actualQuery = query.substring(KEYWORD.length).trim();
+                    
+                    if (actualQuery) {
+                        // Perform code search
+                        searchFiles(actualQuery, feelingLucky);
+                    } else {
+                        // If just the keyword with no search term, prompt for more
+                        resultsContainer.innerHTML = '<div class="no-results">Please enter a search term after "' + KEYWORD + '"</div>';
+                        resultsContainer.style.display = 'block';
+                    }
+                } else {
+                    // Perform Google search
+                    performGoogleSearch(query, feelingLucky);
+                }
+            }
+
+            // Function to perform a Google search
+            function performGoogleSearch(query, feelingLucky = false) {
+                const searchUrl = feelingLucky 
+                    ? `https://www.google.com/search?q=${encodeURIComponent(query)}&btnI=I%27m+Feeling+Lucky`
+                    : `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+                
+                window.location.href = searchUrl;
+            }
+
+            // Function to search for code files
+            function searchFiles(query, feelingLucky = false) {
+                // Show loading indicator for better UX
+                resultsContainer.innerHTML = '<div class="no-results">Searching code files...</div>';
+                resultsContainer.style.display = 'block';
+
+                // Make a request to the backend
+                fetch(`/api/search?q=${encodeURIComponent(query)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (feelingLucky && data.results.length > 0) {
+                            // Automatically download the first result
+                            window.location.href = `/api/download?file=${encodeURIComponent(data.results[0].name)}`;
+                        } else {
+                            displayResults(data.results);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error searching files:', error);
+                        resultsContainer.innerHTML = '<div class="no-results">An error occurred while searching. Please try again.</div>';
+                        resultsContainer.style.display = 'block';
+                    });
+            }
+
+            // Function to display search results
+            function displayResults(results) {
+                resultsContainer.innerHTML = '';
+                
+                if (results.length === 0) {
+                    resultsContainer.innerHTML = '<div class="no-results">No matching files found. Try a different search term.</div>';
+                } else {
+                    results.forEach(file => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'result-item';
+                        
+                        const resultName = document.createElement('div');
+                        resultName.className = 'result-name';
+                        resultName.textContent = file.name;
+                        resultName.setAttribute('role', 'button');
+                        resultName.setAttribute('tabindex', '0');
+                        resultName.addEventListener('click', function() {
+                            window.location.href = `/api/download?file=${encodeURIComponent(file.name)}`;
+                        });
+                        
+                        const resultType = document.createElement('div');
+                        resultType.className = 'result-type';
+                        resultType.textContent = `File type: ${file.extension || 'Unknown'}`;
+                        
+                        const downloadBtn = document.createElement('button');
+                        downloadBtn.className = 'download-btn';
+                        downloadBtn.textContent = 'Download';
+                        downloadBtn.addEventListener('click', function() {
+                            window.location.href = `/api/download?file=${encodeURIComponent(file.name)}`;
+                        });
+                        
+                        resultItem.appendChild(resultName);
+                        resultItem.appendChild(resultType);
+                        resultItem.appendChild(downloadBtn);
+                        resultsContainer.appendChild(resultItem);
+                    });
+                }
+                
+                resultsContainer.style.display = 'block';
+                
+                // Clear search results after 30 seconds on mobile (extended from 20)
+                const timeoutDuration = window.innerWidth <= 768 ? 30000 : 20000;
+                setTimeout(() => {
+                    resultsContainer.style.display = 'none';
+                    // Don't clear the search box on mobile for better UX
+                    if (window.innerWidth > 768) {
+                        searchInput.value = '';
+                        updateSearchModeIndicator();
+                    }
+                }, timeoutDuration);
+            }
+
+            // Fix for iOS 100vh issue
+            function setVH() {
+                let vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }
+            
+            window.addEventListener('resize', setVH);
+            setVH();
+        });
+    </script>
+</body>
+</html>
